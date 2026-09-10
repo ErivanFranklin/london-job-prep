@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#4f46e5" />
+  <title>Erivan — London Job Prep</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-card">
+        <div class="brand-mark">E</div>
+        <div>
+          <h1>London Job Prep</h1>
+          <p>Senior Software Engineer roadmap</p>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <button class="nav-btn active" data-screen="dashboard">🏠 Dashboard</button>
+        <button class="nav-btn" data-screen="roadmap">🗺️ Roadmap</button>
+        <button class="nav-btn" data-screen="study">📚 Study</button>
+        <button class="nav-btn" data-screen="interviews">🎯 Interview Prep</button>
+        <button class="nav-btn" data-screen="applications">💼 Applications</button>
+        <button class="nav-btn" data-screen="weekly">📝 Weekly Review</button>
+      </nav>
+
+      <div class="side-note">
+        <span>Daily rule</span>
+        <strong>1 study + 1 application + 1 interview task</strong>
+      </div>
+      <div class="side-note">
+        <span>Target</span>
+        <strong>£95k–£110k+ Senior Software Engineer</strong>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section id="dashboard" class="screen active">
+        <div class="hero-grid">
+          <article class="hero-card">
+            <span class="eyebrow">London market preparation</span>
+            <h2>Build momentum without overcomplicating the plan.</h2>
+            <p>Apply from week 1 while strengthening system design, distributed systems, AWS, production engineering, and interview delivery.</p>
+            <div class="chips">
+              <span>Senior Software Engineer</span>
+              <span>FinTech + Enterprise</span>
+              <span>Apply while learning</span>
+            </div>
+          </article>
+
+          <article class="today-card">
+            <div class="card-title-row"><h3>Today's 3 moves</h3><span class="status-dot">Live plan</span></div>
+            <div class="today-item"><b>1</b><div><strong>Study</strong><small>One lesson or one concept.</small></div></div>
+            <div class="today-item"><b>2</b><div><strong>Market</strong><small>Review or apply to one strong role.</small></div></div>
+            <div class="today-item"><b>3</b><div><strong>Interview</strong><small>One question, story, or coding task.</small></div></div>
+          </article>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><span>Overall progress</span><strong id="overallPct">0%</strong><small>Across roadmap tasks</small></article>
+          <article class="stat-card"><span>Tasks completed</span><strong id="doneCount">0</strong><small>Keep checking them off</small></article>
+          <article class="stat-card"><span>Applications this week</span><strong id="dashApps">0</strong><small>Target: 5 strong-fit</small></article>
+          <article class="stat-card"><span>Study hours</span><strong id="dashHours">0</strong><small>Consistency over intensity</small></article>
+        </div>
+
+        <div class="two-col">
+          <article class="panel">
+            <div class="section-head"><div><span class="eyebrow">Start here</span><h3>Quick wins</h3></div></div>
+            <div class="quick-grid">
+              <div class="quick">✓ Update LinkedIn headline + About</div>
+              <div class="quick">✓ Set Open to Work to Recruiters only</div>
+              <div class="quick">✓ Upload updated CVs</div>
+              <div class="quick">✓ Apply to first 5–10 roles</div>
+              <div class="quick">✓ Record a system-design explanation</div>
+              <div class="quick">✓ Write 3 production incident stories</div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head"><div><span class="eyebrow">Learning order</span><h3>Priority stack</h3></div></div>
+            <ol class="priority-list">
+              <li><b>System design</b><span>Highest interview value</span></li>
+              <li><b>Distributed systems + Node.js</b><span>Senior backend depth</span></li>
+              <li><b>AWS refresh</b><span>Remove a common market blocker</span></li>
+              <li><b>Observability + databases</b><span>Production-grade reasoning</span></li>
+              <li><b>Interview execution</b><span>Turn experience into offers</span></li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <section id="roadmap" class="screen">
+        <header class="page-head"><div><span class="eyebrow">12-week journey</span><h2>Roadmap</h2><p>Complete the phases in sequence. Keep applications running continuously.</p></div></header>
+        <div id="phaseList" class="phase-list"></div>
+      </section>
+
+      <section id="study" class="screen">
+        <header class="page-head"><div><span class="eyebrow">Focused learning</span><h2>Study plan</h2><p>Prioritize only what improves your senior London interview performance.</p></div></header>
+        <div class="two-col">
+          <article class="panel"><h3>Core sequence</h3><div class="stack-list">
+            <div><b>1. System Design</b><span>Architecture, scale, resilience, security, observability, trade-offs.</span></div>
+            <div><b>2. Distributed Systems</b><span>Idempotency, retries, messaging, Saga, Outbox, event-driven design.</span></div>
+            <div><b>3. AWS Refresh</b><span>Lambda, API Gateway, SQS/SNS, EventBridge, DynamoDB, IAM, CloudWatch.</span></div>
+            <div><b>4. Observability + Data</b><span>Logs, metrics, traces, SLOs, SQL/NoSQL, caching, replication.</span></div>
+            <div><b>5. React + Java Refresh</b><span>Bridge only. Do not delay applications for this.</span></div>
+          </div></article>
+          <article class="panel"><h3>Suggested Udemy courses</h3><div class="stack-list">
+            <div><b>Software Architecture & Design of Modern Large Scale Systems</b><span>Primary system-design course.</span></div>
+            <div><b>Ultimate AWS Certified Developer Associate</b><span>Structured AWS refresh.</span></div>
+            <div><b>NestJS: The Complete Developer's Guide</b><span>Backend architecture in TypeScript.</span></div>
+            <div><b>OpenTelemetry for Observability</b><span>Production monitoring and tracing.</span></div>
+            <div><b>Coding Interview Bootcamp</b><span>Optional algorithms refresh.</span></div>
+          </div></article>
+        </div>
+      </section>
+
+      <section id="interviews" class="screen">
+        <header class="page-head"><div><span class="eyebrow">Interview readiness</span><h2>Interview Prep</h2><p>Your strongest advantage is real production experience. Make it easy to explain.</p></div></header>
+        <div class="two-col">
+          <article class="panel"><h3>Story bank</h3><div class="stack-list">
+            <div><b>Teams Bot + Tab + External SSO</b><span>Architecture, identity, security, delivery, leadership.</span></div>
+            <div><b>Hybrid mobile platform</b><span>Cross-platform architecture and reusable capabilities.</span></div>
+            <div><b>Production / on-call incident</b><span>Operational ownership and troubleshooting.</span></div>
+            <div><b>Associate / LEAP mentoring</b><span>Leadership without direct management.</span></div>
+            <div><b>Blancco / AWS</b><span>Cloud infrastructure and deployment depth.</span></div>
+          </div></article>
+          <article class="panel"><h3>Question families</h3><div class="stack-list">
+            <div><b>System Design</b><span>Architecture, scale, failure modes, trade-offs.</span></div>
+            <div><b>Node.js + TypeScript</b><span>Event loop, async, APIs, performance, testing.</span></div>
+            <div><b>OAuth / OIDC / SSO</b><span>A major differentiator from your Fidelity work.</span></div>
+            <div><b>Cloud</b><span>AWS/Azure choices, deployment, monitoring, security.</span></div>
+            <div><b>Leadership</b><span>Mentoring, conflict, decisions, delivery, failure.</span></div>
+          </div></article>
+        </div>
+      </section>
+
+      <section id="applications" class="screen">
+        <header class="page-head"><div><span class="eyebrow">Market feedback loop</span><h2>Applications</h2><p>Study and applications happen together. The market tells you where to improve.</p></div></header>
+        <div class="two-col">
+          <article class="panel"><h3>Weekly rhythm</h3><div class="stack-list">
+            <div><b>5 strong-fit applications</b><span>Senior roles closely matching your profile.</span></div>
+            <div><b>Up to 3 stretch applications</b><span>Use these to test the upper end of the market.</span></div>
+            <div><b>FinTech CV</b><span>For Node/TypeScript/cloud/financial-services roles.</span></div>
+            <div><b>Enterprise CV</b><span>For Java/Angular/Azure enterprise roles.</span></div>
+          </div></article>
+          <article class="panel"><h3>Track for every role</h3><div class="stack-list">
+            <div><b>Role + salary + company</b><span>Know the compensation target clearly.</span></div>
+            <div><b>Location + hybrid pattern</b><span>Map each role to the best relocation corridor.</span></div>
+            <div><b>CV version</b><span>FinTech or Enterprise.</span></div>
+            <div><b>Status + next action</b><span>Applied, screen, technical, final, rejected, offer.</span></div>
+            <div><b>Gap found</b><span>Feed interview weaknesses back into study.</span></div>
+          </div></article>
+        </div>
+      </section>
+
+      <section id="weekly" class="screen">
+        <header class="page-head"><div><span class="eyebrow">15–20 min per week</span><h2>Weekly Review</h2><p>Use this to keep the plan realistic and responsive to the market.</p></div></header>
+        <article class="panel">
+          <div class="form-grid">
+            <label>Applications sent<input id="apps" type="number" min="0" value="0"></label>
+            <label>Recruiter replies<input id="replies" type="number" min="0" value="0"></label>
+            <label>Interviews booked<input id="interviewsCount" type="number" min="0" value="0"></label>
+            <label>Study hours<input id="hours" type="number" min="0" step="0.5" value="0"></label>
+            <label>Mock interviews<input id="mocks" type="number" min="0" value="0"></label>
+            <label>Coding problems<input id="coding" type="number" min="0" value="0"></label>
+          </div>
+          <label class="text-field">Biggest gap found this week<textarea id="gap"></textarea></label>
+          <label class="text-field">Main focus next week<textarea id="focus"></textarea></label>
+          <label class="text-field">What went well<textarea id="wins"></textarea></label>
+          <div class="actions">
+            <button class="primary" id="saveWeekly">Save progress</button>
+            <button id="exportBtn">Export backup</button>
+            <button id="resetBtn">Reset all progress</button>
+          </div>
+          <p class="note">Progress is saved locally in your browser on this device.</p>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
