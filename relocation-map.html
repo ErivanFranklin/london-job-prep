@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>London Relocation Decision Map v5.1</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+html,body,#map{height:100%;margin:0}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7f9fc}
+#map{min-height:720px}
+.panel{position:absolute;z-index:1000;left:18px;top:18px;width:min(370px,calc(100% - 36px));background:rgba(255,255,255,.96);border:1px solid #dbe4f0;border-radius:18px;box-shadow:0 12px 35px rgba(30,50,90,.16);padding:16px;backdrop-filter:blur(10px)}
+.panel h1{font-size:20px;margin:0 0 6px;color:#142033}.panel p{font-size:12px;line-height:1.45;color:#66758b;margin:0 0 12px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}.controls label{font-size:12px;background:#f7f9fc;border:1px solid #e3e9f2;border-radius:10px;padding:8px;display:flex;gap:7px;align-items:center}
+.legend{margin-top:10px;font-size:11px;color:#66758b;display:flex;flex-wrap:wrap;gap:8px}.dot{width:10px;height:10px;border-radius:50%;display:inline-block}.dot.top{background:#4f46e5}.dot.all{background:#64748b}.dot.software{background:#0ea5e9}.dot.qa{background:#10b981}.dot.church{background:#f59e0b}.dot.green{background:#84cc16}
+.pin{width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#4f46e5;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}.pin span{transform:rotate(45deg);color:#fff;font-weight:800;font-size:13px}
+.popup h3{margin:0 0 6px;font-size:16px;color:#142033}.kv{display:grid;grid-template-columns:96px 1fr;gap:3px 8px;font-size:12px;margin:8px 0}.kv b{color:#334155}.scores{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:11px;margin:8px 0}.chips{display:flex;flex-wrap:wrap;gap:4px;margin:5px 0}.chip{background:#eef2ff;color:#4338ca;border-radius:999px;padding:3px 7px;font-size:10px;font-weight:700}ul{padding-left:18px;margin:6px 0;font-size:11px}.best{background:#f0fdf4;border:1px solid #bbf7d0;padding:7px;border-radius:8px;font-size:11px;color:#166534}.note{font-size:10px;color:#7c8798;margin-top:8px}
+@media(max-width:640px){.panel{position:relative;left:auto;top:auto;width:auto;margin:10px;z-index:1001}#map{height:calc(100vh - 250px);min-height:540px}}
+</style>
+</head>
+<body>
+<div class="panel">
+  <h1>London Relocation Decision Map — v5.1</h1>
+  <p>Latest project version: top-3 shortlist plus optional full shortlist, commute corridors, job hubs, churches, stations/terminals and family context.</p>
+  <div class="controls">
+    <label><input type="checkbox" id="top3" checked> Final Top 3</label>
+    <label><input type="checkbox" id="all"> All locations</label>
+    <label><input type="checkbox" id="corridors" checked> Commute corridors</label>
+    <label><input type="checkbox" id="software" checked> Software hubs</label>
+    <label><input type="checkbox" id="qa" checked> Quality / pharma hubs</label>
+    <label><input type="checkbox" id="church" checked> Church locations</label>
+    <label><input type="checkbox" id="terminals" checked> London terminals</label>
+    <label><input type="checkbox" id="green"> Family / green-space</label>
+  </div>
+  <div class="legend">
+    <span><i class="dot top"></i> Top 3</span><span><i class="dot all"></i> Other shortlist</span><span><i class="dot software"></i> Software</span><span><i class="dot qa"></i> QA</span><span><i class="dot church"></i> Church</span><span><i class="dot green"></i> Family</span>
+  </div>
+  <div class="note">Commute lines are schematic, not live routing. Rent/train times are planning estimates from the project and should be rechecked before a move.</div>
+</div>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const AREAS=[
+{name:'Reading / Caversham',lat:51.4543,lon:-0.9781,top3:true,rank:1,overall:'8.8',rent:'£1,850–£2,400',station:'Reading',terminal:'Paddington',train:'~25–30 min fast',scores:{Rent:9,Transport:9,Software:10,QA:10,Family:9,Church:9},pros:['Strongest two-career corridor','Excellent M4 / Thames Valley tech + pharma depth','Fast GWR to Paddington + Elizabeth Line','Direct church presence in Caversham'],cons:['Longer trip to City/Canary Wharf than west/central jobs','Need to choose neighbourhood carefully around station access'],best:'Best if one or both jobs land in Reading, Wokingham, Bracknell, Slough, Maidenhead or west/central London.'},
+{name:'Watford / Bushey',lat:51.6565,lon:-0.3903,top3:true,rank:2,overall:'9.0',rent:'£2,000–£2,400',station:'Watford Junction',terminal:'Euston',train:'~20–25 min',scores:{Rent:8,Transport:9,Software:9,QA:8,Family:9,Church:9},pros:['Best all-round family default','Fast Euston commute','Good Hertfordshire / M1 / M25 access','Church access via Watford/Chipperfield'],cons:['Less direct for west-Thames Valley jobs','Canary Wharf commute is less attractive'],best:'Best if your role is Euston/central/north-west London or Hertfordshire and Simone finds work north-west of London.'},
+{name:'Orpington / Bromley',lat:51.3741,lon:0.0986,top3:true,rank:3,overall:'8.8',rent:'£2,000–£2,500',station:'Orpington',terminal:'London Bridge / Victoria / Blackfriars',train:'~20–30 min',scores:{Rent:8,Transport:9,Software:9,QA:8,Family:10,Church:10},pros:['Excellent family + church fit','Very strong for City / London Bridge / Canary Wharf access','Quieter suburban environment','Useful south-east London / Kent corridor'],cons:['Poorer fit for Reading/Thames Valley employers','West London roles become a cross-London commute'],best:'Best if your job lands in the City, Canary Wharf, London Bridge or south-east London.'},
+{name:'Guildford',lat:51.2362,lon:-0.5704,top3:false,overall:'8.5',rent:'£2,250–£2,600',station:'Guildford',terminal:'Waterloo',train:'~35–40 min',scores:{Rent:7,Transport:8,Software:8,QA:8,Family:10,Church:10},pros:['High family/lifestyle quality','Direct church presence','Good Surrey technology / life-science access'],cons:['More expensive rent','Central London commute slower than top-three options'],best:'Best if lifestyle and Surrey-based jobs outweigh central-London commute speed.'},
+{name:'Feltham / Hampton / Hounslow',lat:51.4277,lon:-0.3690,top3:false,overall:'8.3',rent:'£2,000–£2,500',station:'Feltham / Hampton',terminal:'Waterloo',train:'~30–40 min',scores:{Rent:8,Transport:8,Software:8,QA:9,Family:8,Church:10},pros:['Excellent Heathrow / Slough / west-London job geography','Direct church in Hampton','Good for pharma, manufacturing, aviation and technology'],cons:['Neighbourhood quality varies significantly','Central London commute can be less comfortable'],best:'Best if jobs cluster around Heathrow, Hounslow, Slough, west London or the M4 corridor.'},
+{name:'Reigate / Redhill',lat:51.2374,lon:-0.2058,top3:false,overall:'8.2',rent:'£2,050–£2,500',station:'Redhill / Reigate',terminal:'Victoria / London Bridge',train:'~30–45 min',scores:{Rent:8,Transport:8,Software:7,QA:9,Family:10,Church:10},pros:['Calm family environment','Church in Reigate','Good Gatwick / Surrey quality and life-science access'],cons:['Smaller software market than Reading/central London','Commute depends heavily on exact station'],best:'Best if Simone lands a Surrey/Gatwick quality role and your role is south/central London.'},
+{name:'St Albans',lat:51.7527,lon:-0.3394,top3:false,overall:'8.0',rent:'£2,250–£2,700',station:'St Albans City',terminal:'St Pancras',train:'~20–25 min',scores:{Rent:6,Transport:10,Software:8,QA:7,Family:10,Church:6},pros:['Excellent schools/family reputation','Fast Thameslink service','Strong north-London access'],cons:['Expensive','No direct church on the original shortlist'],best:'Best if commute/schools dominate and budget is comfortable.'},
+{name:'Maidenhead',lat:51.5224,lon:-0.7176,top3:false,overall:'7.9',rent:'£2,000–£2,500',station:'Maidenhead',terminal:'Paddington',train:'~20–30 min',scores:{Rent:8,Transport:9,Software:9,QA:9,Family:9,Church:7},pros:['Strong M4 / Thames Valley location','Elizabeth Line + GWR','Good compromise between Reading and London'],cons:['Usually weaker value than Reading','Church access less direct than Reading'],best:'Best if jobs are around Slough/Maidenhead while keeping strong London access.'}
+];
+const CHURCHES=[['Reading / Caversham church (RG4)',51.468,-0.975],['Watford / Chipperfield church (WD4)',51.704,-0.490],['Orpington / Bromley church (BR6)',51.364,0.093],['Guildford church (GU1)',51.236,-0.570],['Hampton / Feltham church (TW12)',51.416,-0.370],['Reigate church (RH2)',51.236,-0.205],['Norbury church (SW16)',51.410,-0.122],['Stamford Hill / Tottenham church (N17)',51.588,-0.070],['Willesden church (NW10)',51.547,-0.240]];
+const SOFTWARE=[['Reading / Wokingham tech hub',51.43,-0.91],['Slough / Maidenhead tech corridor',51.51,-0.64],['City of London',51.515,-0.091],['Canary Wharf',51.505,-0.024],['Watford / Hertfordshire',51.66,-0.39],['Guildford / Surrey tech',51.236,-0.57]];
+const QA=[['Thames Valley pharma / medtech',51.45,-0.95],['Slough / Heathrow regulated industry',51.48,-0.53],['Hertfordshire quality / life sciences',51.72,-0.32],['Gatwick / Redhill quality corridor',51.16,-0.17],['South-east London / Kent quality corridor',51.4,0.02]];
+const TERMINALS=[['Paddington',51.5154,-0.1755],['Euston',51.5282,-0.1337],['London Bridge',51.5045,-0.0865],['Victoria',51.4952,-0.1441],['Waterloo',51.5033,-0.1147],['St Pancras',51.5319,-0.1269]];
+const GREEN=[['Reading riverside / parks',51.459,-0.967],['Cassiobury Park, Watford',51.663,-0.421],['High Elms / Orpington green space',51.352,0.105],['Stoke Park, Guildford',51.247,-0.564],['Bushy Park / Hampton',51.416,-0.335],['Priory Park, Reigate',51.235,-0.211]];
+const CORRIDORS=[['Reading → Paddington',[51.4543,-0.9781],[51.5154,-0.1755]],['Watford → Euston',[51.6565,-0.3903],[51.5282,-0.1337]],['Orpington → London Bridge',[51.3741,0.0986],[51.5045,-0.0865]],['Guildford → Waterloo',[51.2362,-0.5704],[51.5033,-0.1147]],['Reigate → Victoria',[51.2374,-0.2058],[51.4952,-0.1441]],['St Albans → St Pancras',[51.7527,-0.3394],[51.5319,-0.1269]],['Maidenhead → Paddington',[51.5224,-0.7176],[51.5154,-0.1755]]];
+const map=L.map('map',{zoomControl:true}).setView([51.52,-0.45],9);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+function iconNum(n,color){return L.divIcon({className:'',iconSize:[34,34],iconAnchor:[17,34],html:`<div class="pin" style="background:${color}"><span>${n}</span></div>`});}
+function areaPopup(a){const scoreHtml=Object.entries(a.scores).map(([k,v])=>`<div><b>${k}:</b> ${v}/10</div>`).join('');const pros=a.pros.map(x=>`<li>${x}</li>`).join('');const cons=a.cons.map(x=>`<li>${x}</li>`).join('');return `<div class="popup"><h3>${a.name}</h3><div class="chips"><span class="chip">Overall ${a.overall}/10</span><span class="chip">${a.rent}</span></div><div class="kv"><b>Station</b><span>${a.station}</span><b>London</b><span>${a.terminal}</span><b>Typical train</b><span>${a.train}</span></div><div class="scores">${scoreHtml}</div><b style="font-size:11px">Pros</b><ul>${pros}</ul><b style="font-size:11px">Trade-offs</b><ul>${cons}</ul><div class="best"><b>Best for us if:</b> ${a.best}</div></div>`;}
+const layers={top3:L.layerGroup(),all:L.layerGroup(),corridors:L.layerGroup(),software:L.layerGroup(),qa:L.layerGroup(),church:L.layerGroup(),terminals:L.layerGroup(),green:L.layerGroup()};
+AREAS.filter(a=>a.top3).forEach(a=>L.marker([a.lat,a.lon],{icon:iconNum(a.rank,'#4f46e5')}).bindPopup(areaPopup(a),{maxWidth:340}).addTo(layers.top3));
+AREAS.filter(a=>!a.top3).forEach(a=>L.circleMarker([a.lat,a.lon],{radius:9,color:'#fff',weight:2,fillColor:'#64748b',fillOpacity:1}).bindPopup(areaPopup(a),{maxWidth:340}).addTo(layers.all));
+CORRIDORS.forEach(c=>L.polyline([c[1],c[2]],{color:'#6366f1',weight:3,opacity:.55,dashArray:'8 8'}).bindTooltip(c[0]+' (schematic)').addTo(layers.corridors));
+SOFTWARE.forEach(x=>L.circleMarker([x[1],x[2]],{radius:7,color:'#fff',weight:2,fillColor:'#0ea5e9',fillOpacity:1}).bindTooltip(x[0]).addTo(layers.software));
+QA.forEach(x=>L.circleMarker([x[1],x[2]],{radius:7,color:'#fff',weight:2,fillColor:'#10b981',fillOpacity:1}).bindTooltip(x[0]).addTo(layers.qa));
+CHURCHES.forEach(x=>L.circleMarker([x[1],x[2]],{radius:6,color:'#fff',weight:2,fillColor:'#f59e0b',fillOpacity:1}).bindTooltip(x[0]).addTo(layers.church));
+TERMINALS.forEach(x=>L.circleMarker([x[1],x[2]],{radius:6,color:'#334155',weight:2,fillColor:'#fff',fillOpacity:1}).bindTooltip(x[0]+' terminal').addTo(layers.terminals));
+GREEN.forEach(x=>L.circleMarker([x[1],x[2]],{radius:6,color:'#fff',weight:2,fillColor:'#84cc16',fillOpacity:1}).bindTooltip(x[0]).addTo(layers.green));
+['top3','corridors','software','qa','church','terminals'].forEach(k=>layers[k].addTo(map));
+function sync(id,layer){const el=document.getElementById(id);el.addEventListener('change',()=>{if(el.checked)layer.addTo(map);else map.removeLayer(layer);});}
+Object.entries(layers).forEach(([k,v])=>sync(k,v));
+L.control.scale({imperial:false}).addTo(map);
+</script>
+</body>
+</html>
