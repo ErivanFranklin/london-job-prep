@@ -15,6 +15,11 @@ const phaseData=[
 ['p6t1','Target 5 strong-fit applications per week','p1'],['p6t2','Target up to 3 stretch applications per week',''],['p6t3','Review repeated keywords in job descriptions every week','qw'],['p6t4','After every interview, log questions, strengths, gaps and next study action','p1'],['p6t5','Use FinTech or Enterprise CV depending on the role','p1']]]
 ];
 
+const mapStyle=document.createElement('link');
+mapStyle.rel='stylesheet';
+mapStyle.href='integrated-map.css';
+document.head.appendChild(mapStyle);
+
 const phaseList=document.getElementById('phaseList');
 phaseData.forEach(([id,title,time,kind,desc,tasks])=>{
   const timeClass=kind==='cont'?'tag cont':'tag time';
@@ -34,12 +39,21 @@ state.weekly=state.weekly||{};
 
 function save(){localStorage.setItem(KEY,JSON.stringify(state));refresh();}
 
+function ensureRelocationMap(){
+  const frame=document.getElementById('relocationFrame');
+  if(frame&&!frame.getAttribute('src')){
+    frame.setAttribute('src',frame.dataset.src||'relocation-map.html');
+  }
+}
+
 // Navigation
 document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById(btn.dataset.screen).classList.add('active');
+  const target=document.getElementById(btn.dataset.screen);
+  if(target)target.classList.add('active');
+  if(btn.dataset.screen==='relocation')ensureRelocationMap();
   window.scrollTo({top:0,behavior:'smooth'});
 }));
 
