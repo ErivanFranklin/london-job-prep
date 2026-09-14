@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#4f46e5" />
   <title>Erivan — London Job Prep</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="readiness.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -24,6 +25,7 @@
         <button class="nav-btn" data-screen="study">📚 Study</button>
         <button class="nav-btn" data-screen="interviews">🎯 Interview Prep</button>
         <button class="nav-btn" data-screen="applications">💼 Applications</button>
+        <button class="nav-btn" data-screen="readiness">🚦 Relocation Readiness</button>
         <button class="nav-btn" data-screen="relocation">📍 Relocation Map</button>
         <button class="nav-btn" data-screen="weekly">📝 Weekly Review</button>
       </nav>
@@ -67,7 +69,16 @@
           <article class="stat-card"><span>Study hours</span><strong id="dashHours">0</strong><small>Consistency over intensity</small></article>
         </div>
 
-        <div class="two-col">
+        <div class="readiness-mini">
+          <div class="readiness-mini-copy">
+            <span>Family move readiness</span>
+            <strong id="miniReadinessScore">0% readiness</strong>
+            <small id="miniReadinessBlockers">Move gates are being calculated…</small>
+          </div>
+          <button id="openReadiness" type="button">Review move readiness →</button>
+        </div>
+
+        <div class="two-col" style="margin-top:16px">
           <article class="panel">
             <div class="section-head"><div><span class="eyebrow">Start here</span><h3>Quick wins</h3></div></div>
             <div class="quick-grid">
@@ -157,6 +168,38 @@
         </div>
       </section>
 
+      <section id="readiness" class="screen">
+        <header class="page-head"><div><span class="eyebrow">Move decision control</span><h2>Relocation Readiness</h2><p>Track the practical challenges of moving the family from Ireland to the London region. This score is a planning aid—not a guarantee—and should rise as the major move gates are closed.</p></div></header>
+
+        <div class="resolved-strip">
+          <span class="resolved-chip">✓ Irish citizenship / UK right to work</span>
+          <span class="resolved-chip">✓ Rent-first strategy</span>
+          <span class="resolved-chip">✓ London corridor shortlist created</span>
+          <span class="resolved-chip">✓ Midleton + Kildare mortgage balances captured</span>
+        </div>
+
+        <div class="readiness-summary">
+          <article class="readiness-score-card">
+            <div class="readiness-score-row">
+              <div class="readiness-ring" id="readinessRing" style="--pct:0"><div class="readiness-ring-inner"><strong id="readinessPct">0%</strong><span>readiness</span></div></div>
+              <div class="readiness-copy">
+                <h3>Overall move readiness</h3>
+                <p>The score gives the most weight to your signed UK role, property transition and cash protection because those are the biggest risks while the household currently relies on one income.</p>
+                <span class="readiness-state" id="readinessState">Planning stage</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="readiness-blockers-card">
+            <h3><span id="blockerCount">0</span> move gates still open</h3>
+            <p>These are the items I would want closed—or deliberately accepted—before committing to the physical move.</p>
+            <div class="blocker-list" id="blockerList"></div>
+          </article>
+        </div>
+
+        <div class="readiness-grid" id="readinessCategories"></div>
+      </section>
+
       <section id="relocation" class="screen">
         <header class="page-head relocation-head"><div><span class="eyebrow">Family relocation decision</span><h2>Relocation Map</h2><p>Compare shortlisted areas using separate layers for trains, roads, commute options, software jobs, Simone’s quality/pharma market, CCUK/CCB-related churches, and family anchors.</p></div></header>
         <article class="panel map-panel">
@@ -193,5 +236,6 @@
     </main>
   </div>
   <script src="app.js"></script>
+  <script src="readiness.js"></script>
 </body>
 </html>
