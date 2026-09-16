@@ -2,7 +2,7 @@
   const DATA=[
     {id:'job',title:'Your UK Job',weight:25,desc:'The primary move gate because you are currently the only household income.',tasks:[
       ['job-target','Target roles and £95k–£110k+ salary range defined',true,false],
-      ['job-current-comp','Current Fidelity package recorded: €75,625 base + 15% bonus opportunity',true,false],
+      ['job-current-comp','Current Fidelity salary and bonus package recorded',true,false],
       ['job-apps','Applications actively underway',false,true],
       ['job-interviews','Interview process underway',false,true],
       ['job-offer','Signed UK offer with acceptable salary and hybrid pattern',false,true]
@@ -16,7 +16,7 @@
     ]},
     {id:'midleton',title:'Midleton Sale',weight:15,desc:'Turn Midleton into known relocation capital and remove its mortgage and maintenance costs.',tasks:[
       ['mid-balance','Mortgage balance recorded',true,false],
-      ['mid-maintenance','€119/month Cranberry Lane maintenance identified as a Midleton cost',true,false],
+      ['mid-maintenance','Midleton maintenance direct debit identified',true,false],
       ['mid-value','Current market valuation obtained from an estate agent',false,false],
       ['mid-costs','Sale costs and tax position estimated',false,false],
       ['mid-sale','Property listed / sale agreed',false,true],
@@ -24,7 +24,7 @@
     ]},
     {id:'kildare',title:'Kildare Rental',weight:10,desc:'Keep the Kildare home only if the rental arrangement is operationally and financially safe.',tasks:[
       ['kil-balance','Mortgage balance recorded',true,false],
-      ['kil-rent','Planned gross rent of about €2,000/month recorded',true,false],
+      ['kil-rent','Expected Kildare rental-income estimate recorded',true,false],
       ['kil-consent','Lender consent-to-let confirmed',false,true],
       ['kil-insurance','Landlord insurance and RTB obligations confirmed',false,true],
       ['kil-tax','Irish / UK rental-tax treatment reviewed',false,true],
@@ -32,25 +32,25 @@
       ['kil-royal','Royal London policy for Kildare identified and retention requirement confirmed',false,false]
     ]},
     {id:'debt',title:'Debt & Vehicle Exit',weight:10,desc:'Remove the monthly finance burden before the move and avoid replacing it with new car finance in the UK.',tasks:[
-      ['debt-pcp-details','VW PCP details recorded: €652.64/month, €20,086 final payment, agreement to Oct 2028',true,false],
+      ['debt-pcp-details','VW PCP agreement terms recorded and reviewed',true,false],
       ['debt-vw-settlement','Official VWFS early-settlement figure obtained',false,true],
       ['debt-vw-half','Official VWFS half-rule termination figure obtained',false,false],
       ['debt-vw-route','Best PCP exit route chosen: settle/sell, statutory termination, or later hand-back',false,true],
-      ['debt-car-exit','ID.4 sold / returned and Allianz motor policy cancelled',false,true],
-      ['debt-cu-details','Credit Union balance recorded: €7,034 loan and €2,130.51 shares',true,false],
+      ['debt-car-exit','ID.4 sold / returned and Irish motor policy cancelled',false,true],
+      ['debt-cu-details','Credit Union loan and share balances recorded',true,false],
       ['debt-cu-settle','Credit Union full settlement figure and share-offset treatment confirmed',false,true],
-      ['debt-cu-clear','Credit Union loan cleared and €310.65 monthly DD removed',false,true]
+      ['debt-cu-clear','Credit Union loan cleared and monthly direct debit removed',false,true]
     ]},
     {id:'cash',title:'Cash Reserve & Budget',weight:15,desc:'Protect the family from overlap between London rent, Irish property costs and employment transition.',tasks:[
       ['cash-budget','Ireland-to-London monthly cash-flow projection built',true,false],
-      ['cash-living','Current family living-spend baseline recorded at roughly €1,000–€1,400/month',true,false],
-      ['cash-car-plan','Future UK car plan defined: £8k–£12k cash purchase, no monthly finance, only after finances/jobs are stable',true,false],
+      ['cash-living','Current family monthly living-spend baseline recorded',true,false],
+      ['cash-car-plan','Future UK car plan defined: cash purchase, no monthly finance, only after finances/jobs are stable',true,false],
       ['cash-deposit','London deposit + first month reserved',false,true],
       ['cash-move','Moving and setup costs reserved',false,false],
-      ['cash-buffer','£25k–£35k post-move accessible cash buffer target met',false,true]
+      ['cash-buffer','Post-move emergency cash-buffer target met',false,true]
     ]},
     {id:'housing',title:'London Housing',weight:10,desc:'Rent first and keep the initial home modest while the family establishes work and school routines.',tasks:[
-      ['house-cap','Maximum rent ceiling of about £2,500/month defined',true,false],
+      ['house-cap','London rent ceiling defined',true,false],
       ['house-size','Two-bedroom apartment/flat confirmed as sufficient initially',true,false],
       ['house-live','Current 2-bed rental ranges reviewed for Reading, Watford/Bushey and Orpington/Bromley',true,false],
       ['house-corridor','Final corridor chosen using actual job locations',false,true],
@@ -75,14 +75,12 @@
   let saved=JSON.parse(localStorage.getItem(KEY)||'{}');
   saved.tasks=saved.tasks||{};
 
-  // Migration: seed only newly confirmed facts from the latest financial review.
   const KNOWN_V2=[
     'job-current-comp','sim-target','sim-cv','mid-maintenance','debt-pcp-details','debt-cu-details',
     'cash-budget','cash-living','cash-car-plan','house-size','house-live','school-car','school-childcare'
   ];
   if((saved.schemaVersion||1)<2){
     KNOWN_V2.forEach(id=>saved.tasks[id]=true);
-    // Preserve the original known milestones if this browser never loaded them before.
     DATA.forEach(cat=>cat.tasks.forEach(([id,label,known])=>{if(known&&saved.tasks[id]===undefined)saved.tasks[id]=true;}));
     saved.seeded=true;
     saved.schemaVersion=2;
