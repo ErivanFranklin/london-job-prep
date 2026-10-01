@@ -1,110 +1,117 @@
 (function(){
-  const errorBox=document.getElementById('mapError');
-  function fail(msg){if(errorBox){errorBox.style.display='block';errorBox.textContent=msg;}}
-  if(!window.L){fail('The map library could not load. Refresh the page, or try another network/browser.');return;}
+  const err=document.getElementById('mapError');
+  function fail(m){err.style.display='block';err.textContent=m}
+  if(!window.L){fail('Map library could not load.');return;}
 
-  const AREAS=[
-    {name:'Reading / Caversham / Wokingham',lat:51.4543,lon:-0.9781,top3:true,rank:1,overall:'9.4',rent:'~£1,400–£1,900 typical 2-bed examples',station:'Reading',terminal:'Paddington',train:'~23–43 min; fastest ~23 min',road:'M4',scores:{Rent:9,Transport:10,Software:10,QA:10,Family:9,Church:10},pros:['Strongest combined two-career corridor','Live senior software roles across Reading/Wokingham','Strong supplier-quality, medtech and regulated-quality market','Fast GWR to Paddington and direct CCUK congregation in Caversham'],cons:['City/Canary Wharf commute is less convenient than west/central London'],best:'We want the broadest combined market for both careers, especially Reading/Wokingham/Bracknell/Slough/Thames Valley plus west/central London.'},
-    {name:'Watford / Bushey',lat:51.6565,lon:-0.3903,top3:true,rank:2,overall:'9.1',rent:'~£1,550–£1,850 typical 2-bed examples',station:'Watford Junction',terminal:'Euston',train:'~15–32 min; direct',road:'M1 / M25',scores:{Rent:9,Transport:10,Software:9,QA:9,Family:9,Church:10},pros:['Excellent London commute','Strong access to central/north-west London and Hertfordshire','Current pharmaceutical QA demand in Watford','Official CCUK congregation at Chipperfield'],cons:['Less convenient for Thames Valley / west-M4 employers'],best:'Your role lands in central/north-west London or Hertfordshire and we want a very strong family/commute balance.'},
-    {name:'Maidenhead / East Thames Valley',lat:51.5224,lon:-0.7176,top3:true,rank:3,overall:'8.8',rent:'~£1,450–£2,000 typical 2-bed examples',station:'Maidenhead',terminal:'Paddington',train:'~18–34 min; direct',road:'M4',scores:{Rent:9,Transport:10,Software:8,QA:10,Family:9,Church:7},pros:['Excellent access to Slough, Reading and west London','Fast GWR / Elizabeth Line corridor','Very strong pharma / quality market nearby including Maidenhead and Slough','Good family compromise between London and Reading'],cons:['No direct CCUK congregation in Maidenhead','Local senior software market is thinner than Reading itself'],best:'Simone targets Maidenhead/Slough pharma-quality roles while you target Reading, west London or hybrid London roles.'},
-    {name:'Orpington / Bromley',lat:51.3741,lon:0.0986,top3:false,overall:'8.7',rent:'~£1,600–£1,950 typical 2-bed examples',station:'Orpington',terminal:'London Bridge / Victoria / Blackfriars',train:'~15–32 min to London Bridge depending service',road:'A20 / M25',scores:{Rent:9,Transport:10,Software:9,QA:7,Family:10,Church:10},pros:['Excellent family + church fit','Strong City / London Bridge / Canary Wharf access','Competitive 2-bed rental examples','Frequent CCUK services in Orpington'],cons:['Weaker access to the Thames Valley quality/pharma cluster'],best:'Your job lands in the City, Canary Wharf, London Bridge or south-east London and family/church fit is the main priority.'},
-    {name:'Reigate / Redhill',lat:51.2374,lon:-0.2058,top3:false,overall:'8.5',rent:'~£1,400–£1,800 typical 2-bed examples',station:'Redhill / Reigate',terminal:'Victoria / London Bridge',train:'~28–37 min from Redhill to Victoria',road:'M23 / M25',scores:{Rent:10,Transport:9,Software:8,QA:8,Family:10,Church:10},pros:['Lowest-cost strong family option in this shortlist','Current senior software / fintech activity in Reigate','Official CCUK congregation in Reigate','Good Surrey / Gatwick quality corridor'],cons:['Smaller overall software and pharma market than Reading or London corridors'],best:'We value family space and lower rent, with your role in Surrey/south London and Simone in Surrey/Gatwick quality.'},
-    {name:'Guildford',lat:51.2362,lon:-0.5704,top3:false,overall:'8.4',rent:'~£1,650–£2,200 typical 2-bed examples',station:'Guildford',terminal:'Waterloo',train:'~32–57 min; direct',road:'A3',scores:{Rent:8,Transport:8,Software:8,QA:8,Family:10,Church:10},pros:['Strong family/lifestyle option','Current senior software vacancies','Current quality/compliance opportunities','Official CCUK congregation in Guildford'],cons:['Slower average London commute than the top four','Rent can rise quickly near the centre/station'],best:'We find Surrey-based roles or value lifestyle and direct church access over the fastest London commute.'},
-    {name:'Hampton / Feltham / Hounslow',lat:51.4277,lon:-0.3690,top3:false,overall:'8.2',rent:'~£1,800–£2,400 typical 2-bed examples',station:'Hampton / Feltham',terminal:'Waterloo',train:'~36–53 min from Hampton; direct',road:'M3 / M4 / M25',scores:{Rent:7,Transport:8,Software:8,QA:9,Family:8,Church:10},pros:['Excellent Heathrow / Hounslow / Slough geography','Live quality-assurance demand around Heathrow','Official CCUK congregation in Hampton','Good west-London and M4 access'],cons:['Commute is slower than Maidenhead/Watford/Orpington','Neighbourhood quality varies, so micro-location matters'],best:'One or both roles cluster around Heathrow, Hounslow, Slough or west London.'},
-    {name:'St Albans',lat:51.7527,lon:-0.3394,top3:false,overall:'8.0',rent:'~£1,800–£2,000+ typical 2-bed examples',station:'St Albans City',terminal:'St Pancras',train:'~21–30 min; direct',road:'M1 / M25',scores:{Rent:8,Transport:10,Software:8,QA:8,Family:10,Church:6},pros:['Excellent family reputation','Very fast Thameslink service','Strong access to London and north-Hertfordshire jobs'],cons:['No direct CCUK congregation in St Albans','Less direct fit for Thames Valley pharma / west-London jobs'],best:'Fast commute and family environment dominate, and church travel is acceptable.'}
-  ];
-
-  const CHURCH_LONDON=[
-    {name:'Bromley (Orpington)',lat:51.374,lon:0.098,address:'207–215 High Street, 2nd Floor, Orpington BR6 0PF',url:'https://christiancongregation.org.uk/locations/bromley/'},
-    {name:'Feltham (Hounslow) / Hampton',lat:51.421,lon:-0.371,address:'Linden Rd, Hampton TW12 2JG',url:'https://christiancongregation.org.uk/locations/'},
-    {name:'Norbury',lat:51.411,lon:-0.122,address:'Woodmansterne Rd, London SW16 5UQ',url:'https://christiancongregation.org.uk/locations/'},
-    {name:'Stamford Hill (Tottenham)',lat:51.588,lon:-0.070,address:'Entrance via High Road (Car Park), London N17 9HT',url:'https://christiancongregation.org.uk/locations/'},
-    {name:'Willesden',lat:51.547,lon:-0.240,address:'Cullingworth Road, Willesden, London NW10 1ET',url:'https://christiancongregation.org.uk/locations/willesden/'}
-  ];
-  const CHURCH_COMMUTER=[
-    {name:'Watford / Chipperfield',lat:51.704,lon:-0.490,address:'The Common, Chipperfield, Hertfordshire WD4 9BS',url:'https://christiancongregation.org.uk/locations/watford/'},
-    {name:'Reading / Caversham',lat:51.468,lon:-0.975,address:'Harley Rd, Caversham, Reading RG4 8DB',url:'https://christiancongregation.org.uk/locations/'},
-    {name:'Guildford',lat:51.236,lon:-0.570,address:'6 Artillery Terrace, Guildford GU1 4NL',url:'https://christiancongregation.org.uk/locations/'},
-    {name:'Reigate',lat:51.236,lon:-0.205,address:'Alma Road, Reigate RH2 0DH',url:'https://christiancongregation.org.uk/locations/'}
+  const C={violet:'#5b4bff',red:'#ef3b4f',green:'#13a36f',yellow:'#f5b400',blue:'#4a8df8',orange:'#ff8a1f',teal:'#18a9a4',purple:'#9557e7'};
+  const areas=[
+    {name:'Maidenhead',rank:1,color:C.violet,center:[51.5224,-0.7176],top:true,desc:'Fast west-London rail access, Thames Valley jobs, strong family option.',poly:[[51.485,-0.815],[51.472,-0.742],[51.489,-0.662],[51.530,-0.625],[51.568,-0.659],[51.574,-0.741],[51.552,-0.806]]},
+    {name:'Watford',rank:2,color:C.red,center:[51.6565,-0.3903],top:true,desc:'Fast Euston access, Hertfordshire jobs, strong family and church fit.',poly:[[51.612,-0.455],[51.620,-0.360],[51.647,-0.330],[51.692,-0.350],[51.710,-0.415],[51.682,-0.475]]},
+    {name:'Bromley / Orpington corridor',rank:3,color:C.green,center:[51.386,0.045],top:true,desc:'Strong City/London Bridge access with excellent family and church fit.',poly:[[51.330,-0.010],[51.335,0.095],[51.375,0.142],[51.428,0.112],[51.450,0.035],[51.422,-0.035],[51.365,-0.045]]},
+    {name:'Reading',color:C.yellow,center:[51.4543,-0.9781],desc:'Large Thames Valley technology and quality/pharma market.',poly:[[51.420,-1.035],[51.420,-0.930],[51.470,-0.900],[51.497,-0.970],[51.480,-1.035]]},
+    {name:'Slough / Windsor corridor',color:C.blue,center:[51.500,-0.600],desc:'M4 corridor combining west-London access, pharma and enterprise employers.',poly:[[51.455,-0.680],[51.452,-0.565],[51.493,-0.515],[51.535,-0.540],[51.548,-0.630],[51.515,-0.690]]},
+    {name:'Woking / Guildford corridor',color:C.purple,center:[51.280,-0.590],desc:'Surrey technology and quality market with strong family/lifestyle profile.',poly:[[51.190,-0.690],[51.185,-0.535],[51.235,-0.470],[51.325,-0.500],[51.355,-0.610],[51.315,-0.715],[51.235,-0.735]]},
+    {name:'Croydon',color:C.orange,center:[51.376,-0.100],desc:'South-London employment corridor with fast central access.',poly:[[51.330,-0.160],[51.325,-0.045],[51.382,-0.010],[51.430,-0.060],[51.422,-0.145],[51.370,-0.175]]},
+    {name:'St Albans',color:C.teal,center:[51.7527,-0.3394],desc:'Fast Thameslink commute and highly family-oriented environment.',poly:[[51.710,-0.415],[51.715,-0.285],[51.770,-0.255],[51.810,-0.330],[51.795,-0.420]]}
   ];
 
-  const STATIONS=[
-    ['Reading',51.4590,-0.9722,'Paddington / Elizabeth Line'],['Watford Junction',51.6635,-0.3967,'Euston'],['Orpington',51.3734,0.0890,'London Bridge / Victoria / Blackfriars'],['Guildford',51.2369,-0.5804,'Waterloo'],['Feltham',51.4479,-0.4098,'Waterloo'],['Redhill',51.2404,-0.1659,'Victoria / London Bridge'],['St Albans City',51.7505,-0.3275,'St Pancras'],['Maidenhead',51.5187,-0.7227,'Paddington / Elizabeth Line']
+  const stations=[
+    ['Maidenhead',51.5187,-0.7227],['Watford Junction',51.6635,-0.3967],['Orpington',51.3734,0.0890],
+    ['Reading',51.4590,-0.9722],['Slough',51.5110,-0.5910],['Windsor',51.4839,-0.6105],
+    ['Woking',51.3185,-0.5572],['Guildford',51.2369,-0.5804],['East Croydon',51.3753,-0.0928],
+    ['St Albans City',51.7505,-0.3275],['Paddington',51.5154,-0.1755],['Euston',51.5282,-0.1337],
+    ['London Bridge',51.5045,-0.0865],['Waterloo',51.5033,-0.1147],['St Pancras',51.5319,-0.1269]
   ];
-  const TERMINALS=[['Paddington',51.5154,-0.1755],['Euston',51.5282,-0.1337],['London Bridge',51.5045,-0.0865],['Victoria',51.4952,-0.1441],['Waterloo',51.5033,-0.1147],['St Pancras',51.5319,-0.1269]];
-  const COMMUTES=[
-    ['Reading → Paddington',[51.459,-0.9722],[51.5154,-0.1755]],['Watford → Euston',[51.6635,-0.3967],[51.5282,-0.1337]],['Orpington → London Bridge',[51.3734,0.089],[51.5045,-0.0865]],['Guildford → Waterloo',[51.2369,-0.5804],[51.5033,-0.1147]],['Redhill → Victoria',[51.2404,-0.1659],[51.4952,-0.1441]],['St Albans → St Pancras',[51.7505,-0.3275],[51.5319,-0.1269]],['Maidenhead → Paddington',[51.5187,-0.7227],[51.5154,-0.1755]]
+  const rails=[
+    [[51.5187,-0.7227],[51.5154,-0.1755]],[[51.6635,-0.3967],[51.5282,-0.1337]],[[51.3734,0.089],[51.5045,-0.0865]],
+    [[51.459,-0.9722],[51.5154,-0.1755]],[[51.3185,-0.5572],[51.5033,-0.1147]],[[51.7505,-0.3275],[51.5319,-0.1269]]
   ];
-  const ROADS=[
-    ['M4 / Thames Valley',[51.515,-0.17],[51.53,-0.48],[51.51,-0.70],[51.46,-0.98]],
-    ['M1 / North-west corridor',[51.53,-0.13],[51.60,-0.25],[51.66,-0.39],[51.75,-0.34]],
-    ['M25 west / north arc',[51.44,-0.47],[51.54,-0.50],[51.66,-0.39]],
-    ['A20 / South-east corridor',[51.50,-0.10],[51.43,0.00],[51.37,0.10]],
-    ['A3 / Surrey corridor',[51.50,-0.12],[51.38,-0.35],[51.24,-0.57]],
-    ['M23 / Gatwick corridor',[51.49,-0.14],[51.34,-0.17],[51.24,-0.20]]
+  const roads=[
+    [[51.515,-0.17],[51.52,-0.50],[51.52,-0.72],[51.46,-0.98]],
+    [[51.53,-0.13],[51.59,-0.26],[51.66,-0.39],[51.75,-0.34]],
+    [[51.50,-0.09],[51.44,-0.02],[51.38,0.09]],
+    [[51.50,-0.12],[51.38,-0.35],[51.28,-0.59]]
   ];
-  const SOFTWARE=[['City of London',51.515,-0.091],['Canary Wharf',51.505,-0.024],['Reading / Wokingham',51.43,-0.91],['Slough / Maidenhead',51.51,-0.64],['Watford / Hertfordshire',51.66,-0.39],['Guildford / Surrey tech',51.236,-0.57]];
-  const QUALITY=[['Thames Valley pharma / medtech',51.45,-0.95],['Slough / Heathrow regulated industry',51.48,-0.53],['Hertfordshire quality / life sciences',51.72,-0.32],['Gatwick / Redhill quality corridor',51.16,-0.17],['South-east London / Kent quality corridor',51.40,0.02]];
-  const FAMILY=[['Reading riverside / parks',51.459,-0.967],['Cassiobury Park, Watford',51.663,-0.421],['High Elms / Orpington green space',51.352,0.105],['Stoke Park, Guildford',51.247,-0.564],['Bushy Park / Hampton',51.416,-0.335],['Priory Park, Reigate',51.235,-0.211]];
+  const software=[['City / FinTech',51.515,-0.091],['Canary Wharf',51.505,-0.024],['Reading Tech',51.456,-0.97],['Slough Enterprise',51.511,-0.59],['Watford Tech',51.656,-0.39],['Guildford Tech',51.236,-0.57]];
+  const quality=[['Reading / Wokingham Pharma',51.44,-0.91],['Maidenhead / Slough Pharma',51.51,-0.67],['Hertfordshire Life Sciences',51.71,-0.33],['Surrey Quality',51.26,-0.50],['South-East Quality',51.39,0.01]];
+  const churches=[['Orpington',51.374,0.098],['Hampton',51.421,-0.371],['Norbury',51.411,-0.122],['Willesden',51.547,-0.240],['Watford / Chipperfield',51.704,-0.490],['Reading / Caversham',51.468,-0.975],['Guildford',51.236,-0.570],['Reigate',51.236,-0.205]];
+  const parks=[['Cassiobury Park',51.663,-0.421],['Ockwells Park',51.506,-0.738],['High Elms',51.352,0.105],['Stoke Park',51.247,-0.564],['Bushy Park',51.416,-0.335],['Forbury Gardens',51.456,-0.969]];
+  const schools=[['Maidenhead family schools',51.532,-0.730],['Watford family schools',51.666,-0.378],['Orpington family schools',51.382,0.100],['Reading family schools',51.465,-0.955],['Guildford family schools',51.246,-0.583],['St Albans family schools',51.759,-0.338]];
 
-  const map=L.map('map',{zoomControl:true,preferCanvas:true}).setView([51.50,-0.42],9);
+  const map=L.map('map',{zoomControl:true,preferCanvas:true}).setView([51.51,-0.38],9);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
 
-  const layers={top3:L.layerGroup(),other:L.layerGroup(),trains:L.layerGroup(),roads:L.layerGroup(),commute:L.layerGroup(),software:L.layerGroup(),quality:L.layerGroup(),churchLondon:L.layerGroup(),churchCommuter:L.layerGroup(),family:L.layerGroup()};
+  const layers={
+    top3:L.layerGroup(),otherAreas:L.layerGroup(),trains:L.layerGroup(),roads:L.layerGroup(),commute:L.layerGroup(),
+    software:L.layerGroup(),quality:L.layerGroup(),churchLondon:L.layerGroup(),churchCommuter:L.layerGroup(),parks:L.layerGroup(),schools:L.layerGroup()
+  };
+  const areaIndex={};
 
-  function pinIcon(n){return L.divIcon({className:'',iconSize:[34,34],iconAnchor:[17,34],html:'<div class="pin"><span>'+n+'</span></div>'});}
-  function circle(lat,lon,color,tooltip,layer,radius){return L.circleMarker([lat,lon],{radius:radius||7,color:'#fff',weight:2,fillColor:color,fillOpacity:1}).bindTooltip(tooltip).addTo(layer);}
-  function areaPopup(a){
-    const scores=Object.keys(a.scores).map(k=>'<div><b>'+k+':</b> '+a.scores[k]+'/10</div>').join('');
-    const pros=a.pros.map(x=>'<li>'+x+'</li>').join('');
-    const cons=a.cons.map(x=>'<li>'+x+'</li>').join('');
-    return '<div class="popup"><h3>'+a.name+'</h3><div class="chips"><span class="chip">Overall '+a.overall+'/10</span><span class="chip">'+a.rent+'</span></div><div class="kv"><b>Station</b><span>'+a.station+'</span><b>London</b><span>'+a.terminal+'</span><b>Typical train</b><span>'+a.train+'</span><b>Road</b><span>'+a.road+'</span></div><div class="scores">'+scores+'</div><b style="font-size:11px">Pros</b><ul>'+pros+'</ul><b style="font-size:11px">Trade-offs</b><ul>'+cons+'</ul><div class="best"><b>Best for us if:</b> '+a.best+'</div></div>';
+  function popup(a){return '<div class="area-popup"><h3>'+a.name+'</h3><div class="chips">'+(a.rank?'<span class="chip">Rank #'+a.rank+'</span>':'')+'<span class="chip">Relocation corridor</span></div><p>'+a.desc+'</p><p>Use the layer controls to compare trains, roads, jobs, church access and family anchors.</p></div>'}
+  function rankIcon(n,color){return L.divIcon({className:'',iconSize:[40,40],iconAnchor:[20,20],html:'<div class="rank-pin" style="background:'+color+'">'+n+'</div>'})}
+  function labelIcon(name,color){return L.divIcon({className:'',iconSize:[160,34],iconAnchor:[80,17],html:'<div class="label-pin" style="color:'+color+'"><span class="bullet"></span>'+name+'</div>'})}
+  const svg={
+    train:'<svg viewBox="0 0 24 24"><path d="M6 2h12a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3l2 3h-3l-2-3H9l-2 3H4l2-3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zm0 3v5h12V5H6zm2 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm8 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>',
+    job:'<svg viewBox="0 0 24 24"><path d="M9 4h6l1 2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l1-2zm1.5 2h3L13 5h-2l-.5 1zM2 11h8v2h4v-2h8v7H2v-7z"/></svg>',
+    church:'<svg viewBox="0 0 24 24"><path d="M11 2h2v3h3v2h-3v2.2l6 4.3V22H5v-8.5l6-4.3V7H8V5h3V2zm1 9.5L8 14.4V20h3v-4h2v4h3v-5.6l-4-2.9z"/></svg>',
+    park:'<svg viewBox="0 0 24 24"><path d="M12 2l4 5h-2l4 5h-4v3h3l-5 7-5-7h3v-3H6l4-5H8l4-5z"/></svg>',
+    school:'<svg viewBox="0 0 24 24"><path d="M2 8l10-5 10 5-10 5L2 8zm4 4.2 6 3 6-3V17l-6 3-6-3v-4.8z"/></svg>'
+  };
+  function iconMarker(lat,lon,color,type,title,layer){
+    const ic=L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],html:'<div class="icon-marker" style="color:'+color+'">'+svg[type]+'</div>'});
+    return L.marker([lat,lon],{icon:ic}).bindTooltip(title).addTo(layer);
   }
-  function churchPopup(c){return '<div class="popup"><h3>'+c.name+'</h3><div class="sub">Christian Congregation in the United Kingdom (CCUK)</div><div class="kv"><b>Official address</b><span>'+c.address+'</span></div><div class="source">Pin is an approximate map position. Verify the official address/service times before travelling.<br><a href="'+c.url+'" target="_blank" rel="noopener">Open official CCUK listing</a></div></div>';}
 
-  AREAS.filter(a=>a.top3).forEach(a=>L.marker([a.lat,a.lon],{icon:pinIcon(a.rank)}).bindPopup(areaPopup(a),{maxWidth:340}).addTo(layers.top3));
-  AREAS.filter(a=>!a.top3).forEach(a=>circle(a.lat,a.lon,'#64748b',a.name,layers.other,9).bindPopup(areaPopup(a),{maxWidth:340}));
-  STATIONS.forEach(s=>circle(s[1],s[2],'#0284c7',s[0]+' station',layers.trains,6).bindPopup('<b>'+s[0]+'</b><br><small>Direct/primary London corridor: '+s[3]+'</small>'));
-  TERMINALS.forEach(s=>circle(s[1],s[2],'#0f172a',s[0]+' terminal',layers.trains,5));
-  COMMUTES.forEach(r=>L.polyline([r[1],r[2]],{color:'#8b5cf6',weight:3,opacity:.62,dashArray:'8 8'}).bindTooltip(r[0]+' · schematic').addTo(layers.commute));
-  ROADS.forEach(r=>L.polyline(r.slice(1),{color:'#e11d48',weight:4,opacity:.55}).bindTooltip(r[0]+' · schematic corridor').addTo(layers.roads));
-  SOFTWARE.forEach(x=>circle(x[1],x[2],'#0284c7',x[0],layers.software,7));
-  QUALITY.forEach(x=>circle(x[1],x[2],'#10b981',x[0],layers.quality,7));
-  FAMILY.forEach(x=>circle(x[1],x[2],'#65a30d',x[0],layers.family,7));
-  CHURCH_LONDON.forEach(c=>circle(c.lat,c.lon,'#f59e0b',c.name,layers.churchLondon,8).bindPopup(churchPopup(c),{maxWidth:320}));
-  CHURCH_COMMUTER.forEach(c=>circle(c.lat,c.lon,'#d97706',c.name,layers.churchCommuter,8).bindPopup(churchPopup(c),{maxWidth:320}));
+  areas.forEach(a=>{
+    const target=a.top?layers.top3:layers.otherAreas;
+    const poly=L.polygon(a.poly,{color:a.color,weight:2,opacity:.95,fillColor:a.color,fillOpacity:a.top?.14:.08,dashArray:a.top?null:'6 5'}).bindPopup(popup(a)).addTo(target);
+    const marker=a.top?L.marker(a.center,{icon:rankIcon(a.rank,a.color)}):L.marker(a.center,{icon:labelIcon(a.name,a.color)});
+    marker.bindPopup(popup(a)).addTo(target);
+    if(a.top)L.marker([a.center[0],a.center[1]-0.04],{icon:labelIcon(a.name,a.color)}).bindPopup(popup(a)).addTo(target);
+    areaIndex[a.name]={a,poly,marker};
+  });
+
+  rails.forEach(r=>L.polyline(r,{color:'#7d8ba5',weight:2,opacity:.7,dashArray:'5 5'}).addTo(layers.trains));
+  stations.forEach(s=>iconMarker(s[1],s[2],'#405ce7','train',s[0],layers.trains));
+  roads.forEach(r=>L.polyline(r,{color:'#ff4055',weight:2.5,opacity:.7}).addTo(layers.roads));
+  rails.forEach(r=>L.polyline(r,{color:'#8558e8',weight:3,opacity:.45,dashArray:'2 8'}).addTo(layers.commute));
+  software.forEach(x=>iconMarker(x[1],x[2],'#5b63e6','job',x[0],layers.software));
+  quality.forEach(x=>iconMarker(x[1],x[2],'#13a36f','job',x[0],layers.quality));
+  churches.slice(0,4).forEach(x=>iconMarker(x[1],x[2],'#8b4ce8','church',x[0],layers.churchLondon));
+  churches.slice(4).forEach(x=>iconMarker(x[1],x[2],'#8b4ce8','church',x[0],layers.churchCommuter));
+  parks.forEach(x=>iconMarker(x[1],x[2],'#159447','park',x[0],layers.parks));
+  schools.forEach(x=>iconMarker(x[1],x[2],'#f3a400','school',x[0],layers.schools));
 
   const presets={
-    clean:['top3'],
-    commute:['top3','trains','roads','commute'],
-    jobs:['top3','software','quality'],
-    church:['top3','churchLondon','churchCommuter'],
-    family:['top3','family','churchLondon','churchCommuter'],
+    clean:['top3','otherAreas'],
+    commute:['top3','otherAreas','trains','roads','commute'],
+    jobs:['top3','otherAreas','software','quality'],
+    church:['top3','otherAreas','churchLondon','churchCommuter'],
+    family:['top3','otherAreas','parks','schools','churchLondon','churchCommuter'],
     all:Object.keys(layers)
   };
-
   function setLayers(names){
-    Object.keys(layers).forEach(k=>{if(map.hasLayer(layers[k]))map.removeLayer(layers[k]);});
+    Object.keys(layers).forEach(k=>{if(map.hasLayer(layers[k]))map.removeLayer(layers[k])});
     names.forEach(k=>layers[k]&&layers[k].addTo(map));
-    document.querySelectorAll('[data-layer]').forEach(cb=>{cb.checked=names.includes(cb.dataset.layer);});
-    setTimeout(()=>map.invalidateSize(),50);
+    document.querySelectorAll('[data-layer]').forEach(cb=>cb.checked=names.includes(cb.dataset.layer));
   }
   function setPreset(name){
     setLayers(presets[name]||presets.clean);
     document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('active',b.dataset.preset===name));
   }
-
   document.querySelectorAll('[data-layer]').forEach(cb=>cb.addEventListener('change',()=>{
-    const k=cb.dataset.layer;
-    if(cb.checked)layers[k].addTo(map);else map.removeLayer(layers[k]);
+    const k=cb.dataset.layer; cb.checked?layers[k].addTo(map):map.removeLayer(layers[k]);
     document.querySelectorAll('.preset').forEach(b=>b.classList.remove('active'));
   }));
-  document.querySelectorAll('.preset').forEach(btn=>btn.addEventListener('click',()=>setPreset(btn.dataset.preset)));
-  document.getElementById('fitShortlist').addEventListener('click',()=>{const pts=AREAS.map(a=>[a.lat,a.lon]);map.fitBounds(pts,{padding:[55,55]});});
-  document.getElementById('resetView').addEventListener('click',()=>{map.setView([51.50,-0.42],9);});
+  document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>setPreset(b.dataset.preset)));
+  document.querySelectorAll('[data-area]').forEach(b=>b.addEventListener('click',()=>{
+    const x=areaIndex[b.dataset.area]; if(!x)return;
+    map.fitBounds(x.poly.getBounds(),{padding:[80,80],maxZoom:11});
+    setTimeout(()=>x.marker.openPopup(),250);
+  }));
 
-  setPreset('clean');
+  setPreset('all');
   L.control.scale({imperial:false}).addTo(map);
-  setTimeout(()=>map.invalidateSize(),150);
+  setTimeout(()=>map.invalidateSize(),120);
   window.addEventListener('resize',()=>map.invalidateSize());
 })();
