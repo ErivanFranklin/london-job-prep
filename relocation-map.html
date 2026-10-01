@@ -1,89 +1,143 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#eef3f8" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="theme-color" content="#f7f9fc"/>
   <title>London Relocation Decision Map</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="relocation-map.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="relocation-map.css?v=7.0"/>
 </head>
 <body>
-  <div class="map-app">
-    <aside class="panel" aria-label="Map layer controls">
-      <div class="head">
-        <div class="head-row">
-          <div>
-            <h1>London Relocation Decision Map</h1>
-            <p>Explore commute, jobs, church access and family fit one layer at a time.</p>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">LR</div>
+      <div>
+        <div class="brand-title">London Relocation</div>
+        <div class="brand-sub">Family move decision hub</div>
+      </div>
+    </div>
+
+    <nav class="side-nav" aria-label="Map navigation">
+      <button class="nav-item active">▱ <span>Map</span></button>
+      <button class="nav-item">⌂ <span>Dashboard</span></button>
+      <button class="nav-item">☆ <span>Shortlist</span></button>
+      <button class="nav-item">◫ <span>Compare</span></button>
+      <button class="nav-item">▤ <span>Notes</span></button>
+      <button class="nav-item">⌑ <span>Saved areas</span></button>
+    </nav>
+
+    <div class="side-spacer"></div>
+    <button class="nav-item muted">⚙ <span>Settings</span></button>
+  </aside>
+
+  <section class="map-shell">
+    <header class="map-header">
+      <div>
+        <h1>London Relocation Decision Map</h1>
+        <p>Explore commute, jobs, church access and family fit one layer at a time.</p>
+        <span class="version-pill">v7.0 · interactive corridor view</span>
+      </div>
+      <a class="fullscreen-link" href="relocation-map.html" target="_blank" rel="noopener">Open full screen ↗</a>
+    </header>
+
+    <div class="toolbar">
+      <button class="preset active" data-preset="clean">Clean</button>
+      <button class="preset" data-preset="commute">Commute</button>
+      <button class="preset" data-preset="jobs">Jobs</button>
+      <button class="preset" data-preset="church">Church</button>
+      <button class="preset" data-preset="family">Family</button>
+      <button class="preset primary" data-preset="all">All</button>
+    </div>
+
+    <div class="map-body">
+      <aside class="controls" aria-label="Map filters">
+        <section class="control-section">
+          <div class="section-title"><span>SHORTLIST LOCATIONS</span><span>−</span></div>
+
+          <div class="filter-card">
+            <label class="filter-row headline">
+              <input type="checkbox" data-layer="top3" checked>
+              <span class="dot violet"></span>
+              <strong>Current Top 3</strong>
+              <span class="counter">3</span>
+            </label>
+            <button class="location-row" data-area="Maidenhead"><span class="rank rank-1">1</span><span>Maidenhead</span><span>›</span></button>
+            <button class="location-row" data-area="Watford"><span class="rank rank-2">2</span><span>Watford</span><span>›</span></button>
+            <button class="location-row" data-area="Bromley / Orpington corridor"><span class="rank rank-3">3</span><span>Bromley / Orpington corridor</span><span>›</span></button>
           </div>
-          <span class="status">Integrated</span>
-        </div>
-        <span class="version">v6.2 · refreshed 2026 ranking</span>
+
+          <div class="filter-card">
+            <label class="filter-row headline">
+              <input type="checkbox" data-layer="otherAreas" checked>
+              <span class="dot slate"></span>
+              <strong>Other recommended areas</strong>
+              <span class="counter">5</span>
+            </label>
+            <button class="location-row" data-area="Reading"><span class="area-dot reading"></span><span>Reading</span><span>›</span></button>
+            <button class="location-row" data-area="Slough / Windsor corridor"><span class="area-dot slough"></span><span>Slough / Windsor corridor</span><span>›</span></button>
+            <button class="location-row" data-area="Woking / Guildford corridor"><span class="area-dot guildford"></span><span>Woking / Guildford corridor</span><span>›</span></button>
+            <button class="location-row" data-area="Croydon"><span class="area-dot croydon"></span><span>Croydon</span><span>›</span></button>
+            <button class="location-row" data-area="St Albans"><span class="area-dot stalbans"></span><span>St Albans</span><span>›</span></button>
+          </div>
+        </section>
+
+        <section class="control-section">
+          <div class="section-title"><span>TRANSPORT</span><span>−</span></div>
+          <div class="filter-card compact">
+            <label class="filter-row"><input type="checkbox" data-layer="trains" checked><span class="mini-icon train">▦</span><span>Trains &amp; stations</span><span class="counter">3</span></label>
+            <label class="filter-row"><input type="checkbox" data-layer="roads" checked><span class="mini-icon road">━</span><span>Major road corridors</span></label>
+            <label class="filter-row"><input type="checkbox" data-layer="commute" checked><span class="mini-icon commute">◌</span><span>Commute options</span></label>
+          </div>
+        </section>
+
+        <section class="control-section">
+          <div class="section-title"><span>JOB HUBS</span><span>−</span></div>
+          <div class="filter-card compact">
+            <label class="filter-row"><input type="checkbox" data-layer="software" checked><span class="mini-icon briefcase">■</span><span>Software / FinTech hubs</span><span class="counter">2</span></label>
+            <label class="filter-row"><input type="checkbox" data-layer="quality" checked><span class="mini-icon quality">●</span><span>Quality / Pharma hubs</span></label>
+          </div>
+        </section>
+
+        <section class="control-section">
+          <div class="section-title"><span>CHURCH — CHRISTIAN CONGREGATION / CCB-RELATED</span><span>−</span></div>
+          <div class="filter-card compact">
+            <label class="filter-row"><input type="checkbox" data-layer="churchLondon" checked><span class="mini-icon church">♜</span><span>London locations</span></label>
+            <label class="filter-row"><input type="checkbox" data-layer="churchCommuter" checked><span class="mini-icon church2">♜</span><span>Commuter-belt locations</span></label>
+          </div>
+        </section>
+
+        <section class="control-section">
+          <div class="section-title"><span>FAMILY</span><span>−</span></div>
+          <div class="filter-card compact">
+            <label class="filter-row"><input type="checkbox" data-layer="parks" checked><span class="mini-icon park">♣</span><span>Parks / family anchors</span></label>
+            <label class="filter-row"><input type="checkbox" data-layer="schools" checked><span class="mini-icon school">⌂</span><span>School-friendly areas</span></label>
+          </div>
+        </section>
+
+        <div class="sidebar-note">💡 Compare commute, jobs, church access and family fit one layer at a time.</div>
+      </aside>
+
+      <div id="map" aria-label="Interactive Greater London relocation map"></div>
+
+      <div class="legend">
+        <span><i class="legend-box outline"></i>Recommended area boundary</span>
+        <span><i class="legend-box fill"></i>Top 3 area highlighted</span>
+        <span><i class="legend-line rail"></i>Rail line</span>
+        <span><i class="legend-dot station"></i>Train station</span>
+        <span><i class="legend-line road"></i>Major road</span>
+        <span><i class="legend-dot job"></i>Job hub</span>
+        <span><i class="legend-dot park"></i>Park / family</span>
+        <span><i class="legend-dot school"></i>School area</span>
+        <span><i class="legend-dot church"></i>Church location</span>
       </div>
 
-      <div class="presets" aria-label="Quick layer presets">
-        <button type="button" class="preset active" data-preset="clean">Clean</button>
-        <button type="button" class="preset" data-preset="commute">Commute</button>
-        <button type="button" class="preset" data-preset="jobs">Jobs</button>
-        <button type="button" class="preset" data-preset="church">Church</button>
-        <button type="button" class="preset" data-preset="family">Family</button>
-        <button type="button" class="preset" data-preset="all">All</button>
-      </div>
-
-      <details class="group" open>
-        <summary>Shortlist locations</summary>
-        <div class="opts">
-          <label class="opt"><input type="checkbox" data-layer="top3" checked><i class="swatch" style="background:#4f46e5"></i>Current Top 3 <span class="count">3</span></label>
-          <label class="opt"><input type="checkbox" data-layer="other"><i class="swatch" style="background:#64748b"></i>Other recommended areas <span class="count">5</span></label>
-        </div>
-      </details>
-
-      <details class="group" open>
-        <summary>Transport</summary>
-        <div class="opts">
-          <label class="opt"><input type="checkbox" data-layer="trains"><i class="swatch" style="background:#0284c7"></i>Trains & stations</label>
-          <label class="opt"><input type="checkbox" data-layer="roads"><i class="swatch" style="background:#e11d48"></i>Major road corridors</label>
-          <label class="opt"><input type="checkbox" data-layer="commute"><i class="swatch" style="background:#8b5cf6"></i>Commute options</label>
-        </div>
-      </details>
-
-      <details class="group" open>
-        <summary>Job hubs</summary>
-        <div class="opts">
-          <label class="opt"><input type="checkbox" data-layer="software"><i class="swatch" style="background:#0284c7"></i>Software / FinTech hubs</label>
-          <label class="opt"><input type="checkbox" data-layer="quality"><i class="swatch" style="background:#10b981"></i>Quality / Pharma hubs</label>
-        </div>
-      </details>
-
-      <details class="group" open>
-        <summary>Church — CCUK / CCB-related</summary>
-        <div class="opts">
-          <label class="opt"><input type="checkbox" data-layer="churchLondon"><i class="swatch" style="background:#f59e0b"></i>London locations <span class="count">5</span></label>
-          <label class="opt"><input type="checkbox" data-layer="churchCommuter"><i class="swatch" style="background:#d97706"></i>Commuter-belt locations <span class="count">4</span></label>
-        </div>
-      </details>
-
-      <details class="group" open>
-        <summary>Family</summary>
-        <div class="opts">
-          <label class="opt"><input type="checkbox" data-layer="family"><i class="swatch" style="background:#65a30d"></i>Parks / family anchors</label>
-        </div>
-      </details>
-
-      <div class="actions">
-        <button type="button" class="btn primary" id="fitShortlist">Fit shortlist</button>
-        <button type="button" class="btn" id="resetView">Reset view</button>
-      </div>
-
-      <div class="note"><b>Church data:</b> based on the official Christian Congregation in the United Kingdom directory. Pins are approximate map positions; the popups show the official address and source. <b>Transport:</b> road and commute lines are schematic decision aids, not live navigation.</div>
-    </aside>
-
-    <div id="map" aria-label="Interactive London relocation map"></div>
-    <div id="mapError" class="map-error" role="alert"></div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="relocation-map.js"></script>
+      <div id="mapError" class="map-error"></div>
+    </div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="relocation-map.js?v=7.0"></script>
 </body>
 </html>
