@@ -43,7 +43,7 @@
 
   const layers={
     top3:L.layerGroup(),otherAreas:L.layerGroup(),trains:L.layerGroup(),roads:L.layerGroup(),commute:L.layerGroup(),
-    software:L.layerGroup(),quality:L.layerGroup(),churchLondon:L.layerGroup(),churchCommuter:L.layerGroup(),parks:L.layerGroup(),schools:L.layerGroup()
+    software:L.layerGroup(),quality:L.layerGroup(),churchLondon:L.layerGroup(),churchCommuter:L.layerGroup(),parks:L.layerGroup(),schools:L.layerGroup(),interviews:L.layerGroup()
   };
   const areaIndex={};
 
@@ -55,7 +55,7 @@
     job:'<svg viewBox="0 0 24 24"><path d="M9 4h6l1 2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l1-2zm1.5 2h3L13 5h-2l-.5 1zM2 11h8v2h4v-2h8v7H2v-7z"/></svg>',
     church:'<svg viewBox="0 0 24 24"><path d="M11 2h2v3h3v2h-3v2.2l6 4.3V22H5v-8.5l6-4.3V7H8V5h3V2zm1 9.5L8 14.4V20h3v-4h2v4h3v-5.6l-4-2.9z"/></svg>',
     park:'<svg viewBox="0 0 24 24"><path d="M12 2l4 5h-2l4 5h-4v3h3l-5 7-5-7h3v-3H6l4-5H8l4-5z"/></svg>',
-    school:'<svg viewBox="0 0 24 24"><path d="M2 8l10-5 10 5-10 5L2 8zm4 4.2 6 3 6-3V17l-6 3-6-3v-4.8z"/></svg>'
+    school:'<svg viewBox="0 0 24 24"><path d="M2 8l10-5 10 5-10 5L2 8zm4 4.2 6 3 6-3V17l-6 3-6-3v-4.8z"/></svg>', interview:'<svg viewBox="0 0 24 24"><path d="M9 4h6l1 2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l1-2zm1.5 2h3L13 5h-2l-.5 1zM5 10v7h14v-7H5zm5 1h4v2h-4v-2z"/></svg>'
   };
   function iconMarker(lat,lon,color,type,title,layer){
     const ic=L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],html:'<div class="icon-marker" style="color:'+color+'">'+svg[type]+'</div>'});
@@ -82,12 +82,29 @@
   parks.forEach(x=>iconMarker(x[1],x[2],'#159447','park',x[0],layers.parks));
   schools.forEach(x=>iconMarker(x[1],x[2],'#f3a400','school',x[0],layers.schools));
 
+  const interview = L.marker([51.2799,-0.6381],{
+    icon:L.divIcon({
+      className:'',
+      iconSize:[34,34],
+      iconAnchor:[17,17],
+      html:'<div class="icon-marker interview-marker" style="color:#e11d48;width:34px;height:34px;border-width:3px">'+svg.interview+'</div>'
+    })
+  }).bindPopup(
+    '<div class="area-popup"><h3>Simone interview — Boehringer Ingelheim</h3>'+
+    '<div class="chips"><span class="chip">Production Compliance Specialist</span><span class="chip">9 Oct · 1:00 PM</span></div>'+
+    '<p><b>On-site panel interview</b></p>'+
+    '<p>Biological Laboratory, Ash Road, Pirbright, Woking, Surrey, GU24 0NQ</p>'+
+    '<p>This is a live opportunity and a useful anchor when comparing Guildford/Woking, Heathrow, Reading and other relocation corridors.</p>'+
+    '<p><a href="https://www.google.com/maps/search/?api=1&query=Boehringer+Ingelheim+Animal+Health+Ash+Road+Pirbright+GU24+0NQ" target="_blank" rel="noopener">Open in Google Maps ↗</a></p></div>',
+    {maxWidth:330}
+  ).bindTooltip('Simone interview — Boehringer Ingelheim, Pirbright').addTo(layers.interviews);
+
   const presets={
-    clean:['top3','otherAreas'],
-    commute:['top3','otherAreas','trains','roads','commute'],
-    jobs:['top3','otherAreas','software','quality'],
-    church:['top3','otherAreas','churchLondon','churchCommuter'],
-    family:['top3','otherAreas','parks','schools','churchLondon','churchCommuter'],
+    clean:['top3','otherAreas','interviews'],
+    commute:['top3','otherAreas','trains','roads','commute','interviews'],
+    jobs:['top3','otherAreas','software','quality','interviews'],
+    church:['top3','otherAreas','churchLondon','churchCommuter','interviews'],
+    family:['top3','otherAreas','parks','schools','churchLondon','churchCommuter','interviews'],
     all:Object.keys(layers)
   };
   function setLayers(names){
